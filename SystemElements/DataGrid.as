@@ -3,6 +3,9 @@
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	
+	import backend.totemInputController;
+	import flash.geom.Point;
+	
 	public class DataGrid extends MovieClip
 	{
 		private var MAX_HEIGHT:Number;
@@ -17,6 +20,9 @@
 		
 		private var cols:Vector.<Vector.<GridCell>>;
 		
+		private var totemStream:totemInputController = new totemInputController();
+		private var totems = new Array();
+		
 		public function DataGrid(_numCols:int, _numRows:int, _gridWidth:Number, _gridHeight:Number)
 		{
 			numCols = _numCols;
@@ -26,12 +32,13 @@
 			
 			MAX_HEIGHT = gridHeight * 0.75;
 			MIN_HEIGHT = gridHeight * 0.083;
-			MAX_WIDTH = gridWidth * 0.75;
+			MAX_WIDTH = gridWidth * 0.5;
 			MIN_WIDTH = gridWidth * 0.083;
 			
 			if(stage != null) {
 				drawGrid();
 				initGrid();
+				stage.addChild(totemStream);
 			} else {
 				this.addEventListener(Event.ENTER_FRAME, listenForStage);
 			}
@@ -42,6 +49,7 @@
 				this.removeEventListener(Event.ENTER_FRAME, listenForStage);
 				drawGrid();
 				initGrid();
+				stage.addChild(totemStream);
 			}
 		}
 		
@@ -84,7 +92,7 @@
 			
 			//define heights individually
 			for(var i=0;i<cols.length;i++){
-				trace("COLLUMN " + i);
+				//trace("COLLUMN " + i);
 				var numSelected:Number = 0;
 				var selectedHeight:Number = MIN_HEIGHT;
 				var nonSelectedHeight = MIN_HEIGHT;
@@ -107,7 +115,7 @@
 				trace("numSelected: " + numSelected);
 				*/
 				if(selectedHeight > MAX_HEIGHT) {
-					trace("selected height > max height");
+					//trace("selected height > max height");
 					selectedHeight = MAX_HEIGHT;	
 				}
 				
@@ -116,8 +124,8 @@
 				for(var k=0;k<numRows;k++) {
 					currentCell = (cols[i][k]);
 					if(currentCell.selected) {
-						trace("set selected cell height");
-						trace("selectedHeight: " + selectedHeight);
+						//trace("set selected cell height");
+						//trace("selectedHeight: " + selectedHeight);
 						currentCell.cellHeight = selectedHeight;
 					} else {
 						currentCell.cellHeight = nonSelectedHeight;
@@ -132,8 +140,8 @@
 			}
 			
 			//define widths for cols
-			var selectedWidth:Number = MIN_HEIGHT;
-			var nonSelectedWidth = MIN_HEIGHT;
+			var selectedWidth:Number = MIN_WIDTH;
+			var nonSelectedWidth = MIN_WIDTH;
 			var numColsSelected:Number = 0;
 				
 			for(var c=0; c<colSel.length;c++) {
@@ -143,15 +151,15 @@
 			}
 			
 			for(var a=0;a<cols.length;a++){
-				selectedWidth = MIN_HEIGHT + ((gridHeight - (numRows * MIN_HEIGHT)) / numColsSelected);
-
+				selectedWidth = MIN_WIDTH + ((gridWidth - (numCols * MIN_WIDTH)) / numColsSelected);
+				
 				if(selectedWidth > MAX_WIDTH) {
 					//trace("selected height > max height");
 					selectedWidth = MAX_WIDTH;	
 				}
 				
-				nonSelectedWidth = (gridWidth - (numSelected * selectedWidth)) / (numCols - numColsSelected);
-				
+				nonSelectedWidth = (gridWidth - (numColsSelected * selectedWidth)) / (numCols - numColsSelected);
+				trace("nonSelWidth: " + nonSelectedWidth);
 				for(var b=0;b<numRows;b++) {
 					currentCell = (cols[a][b]);
 					if(colSel[a] == 1) {
@@ -177,22 +185,54 @@
 		}
 		
 		public function markActiveCells():void {
-			for(var i=0;i<cols.length;i++){
-				for(var j=0;j<cols[i].length;j++) {
-					var currentCell:GridCell = cols[i][j];
-					if(currentCell.hitTestPoint(stage.mouseX, stage.mouseY)) {
-						currentCell.selected = true;
-						currentCell.visible = false;
-					} else {
-						currentCell.selected = false;
-						currentCell.visible = true;
+			//clear active markers
+			for(var v=0;v<cols.length;v++){
+				for(var n=0;n<cols[v].length;n++) {
+					var currentCell:GridCell = cols[v][n];
+					currentCell.selected = false;
+					//currentCell.visible = true;
+				}
+			}
+			
+			for(var w=0;w<totems.length;w++) {
+				//trace("totem[" + w +"]: " + (totems[w] as Point).x + ", " + (totems[w] as Point).y);
+				for(var i=0;i<cols.length;i++){
+					for(var j=0;j<cols[i].length;j++) {
+						currentCell = cols[i][j];
+						if(currentCell.hitTestPoint((totems[w] as Point).x, (totems[w] as Point).y)) {
+							currentCell.selected = true;
+							//currentCell.visible = false;
+						}
 					}
 				}
 			}
 		}
 		
 		private function pullTuio():void {
+			/**
+			 * Here we're actually pulling the totem data 
+			 * into our array.  You'll have to do this each
+			 * time you want to get new updated data from the 
+			 * controller.  Each totem is always referenced in
+			 * the same array index.  Totem0 will always be 
+			 * in the 0 index of the returned array.  The array is
+			 * populated with the lpergTotem datatype.
+			**/
 			
+			var updatedData:Array = totemStream.totemData();
+			
+			/**
+			 * The rest of the code is just setting the new 
+			 * location of the totems.  If you need to get the 
+			 * deltaX or deltaY of a totem, this information is
+			 * already calculated in the back-end.  See the documentation
+			 * for the lpergTotem datatype for more information.
+			**/
+			
+			totems[0] = new Point(updatedData[0].getLoc().x-1, updatedData[0].getLoc().y-1);
+			totems[1] = new Point(updatedData[1].getLoc().x-1, updatedData[1].getLoc().y-1);
+			totems[2] = new Point(updatedData[2].getLoc().x-1, updatedData[2].getLoc().y-1);
+			totems[3] = new Point(updatedData[3].getLoc().x-1, updatedData[3].getLoc().y-1);
 		}
 	}
 }
