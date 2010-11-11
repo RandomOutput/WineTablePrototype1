@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties mainApplicationPath="main_q1Final.as" projectUUID="7fd05b9b-3da3-4f44-96ad-2027cda93f14" version="6">
+<actionScriptProperties mainApplicationPath="main_q1Final.as" projectUUID="6c02eec4-1231-431c-8c51-7fe0bff8d84d" version="6">
   <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="" strict="true" targetPlayerVersion="10.0.45" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
-      <libraryPathEntry kind="3" linkType="1" path="${FLASHPRO_APPCONFIG}/ActionScript 3.0/FP10/playerglobal.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="C:/PROGRA~1/Adobe/ADOBEF~1/Common/Configuration/ActionScript 3.0/FP10/playerglobal.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="1" linkType="1" path="${FLASHPRO_APPCONFIG}/ActionScript 3.0/libs"/>
       <libraryPathEntry kind="3" linkType="1" path="${FLASHPRO_APPCONFIG}/ActionScript 3.0/libs/11.0/textLayout.swc" useDefaultLinkType="false"/>
     </libraryPath>
